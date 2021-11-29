@@ -109,3 +109,4 @@ gitlab-plugin
 ssh
 publish-over
 publish-over-ssh
+zap
