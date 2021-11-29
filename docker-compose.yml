@@ -1,0 +1,68 @@
+version: '3.6'
+
+services:
+  jenkins:
+    build: ./jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+    expose:
+      - "8080"
+      - "50000"
+    container_name: jenkins
+    
+  db:
+    image: postgres:10.1-alpine
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=archerysec
+      - POSTGRES_PASSWORD=archerysec
+      - POSTGRES_USER=archerysec
+    container_name: postgres
+
+  archery:
+    image: archerysec/archerysec
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+    depends_on:
+      - db
+    links:
+      - db:db
+    environment:
+      - DB_PASSWORD=archerysec
+      - DB_USER=archerysec
+      - DB_NAME=archerysec
+      - DB_HOST=db
+      - NAME=admin
+      - EMAIL=no@noemail.com
+      - PASSWORD=password
+      - DJANGO_SETTINGS_MODULE=archerysecurity.settings.development
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-"SETME"}
+      - DJANGO_DEBUG=1
+      - EMAIL_HOST=mailhog
+      - EMAIL_PORT=1025
+    container_name: archery
+   
+  zap:
+    image: owasp/zap2docker-stable
+    command: zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.disablekey=true -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true
+    ports:
+      - "8090:8090"
+    expose:
+      - "8090"
+    links:
+      - archery
+    container_name: zap
+    
+networks:
+    default:
+      name: jenkins_demo
