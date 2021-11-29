@@ -40,6 +40,14 @@ RUN /bin/bash -c "source /var/dockerscripts/installscmpackages.sh"
 COPY installjenkinsplugins.sh /var/dockerscripts/
 RUN /bin/bash -c "source /var/dockerscripts/installjenkinsplugins.sh"
 
+#install netcore cli dependencies
+#COPY installnetcoredependencies.sh /var/dockerscripts
+#RUN /bin/bash -c "source /var/dockerscripts/installnetcoredependencies.sh"
+
+#install dotnet core sdk - required for building, testing, and publishing dotnetcore projects
+COPY installnetcoresdk.sh /var/dockerscripts
+RUN /bin/bash -c "source /var/dockerscripts/installnetcoresdk.sh"
+
 # cleanup of installation scripts
 RUN rm -rf /var/lib/apt/lists/*
 RUN rm -rf /var/dockerscripts
