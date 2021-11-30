@@ -34,9 +34,4 @@ RUN sed -i -re 's/^anonymous:[^:]+:/anonymous::/' /etc/passwd /etc/shadow
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 RUN sed -i 's/@include common-auth/auth [success=1 default=ignore] pam_unix.so nullok\nauth requisite pam_deny.so\nauth required pam_permit.so/' /etc/pam.d/sshd
 
-RUN echo ""
-RUN echo ""
-RUN echo ""
-
-
 ENTRYPOINT service ssh start && zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.disablekey=true -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true

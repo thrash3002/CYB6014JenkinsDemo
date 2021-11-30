@@ -57,7 +57,3 @@ RUN \
 	
 # Install Archery CLI into container
 RUN pip install archerysec-cli
-
-RUN echo ""
-RUN echo ""
-RUN echo ""
