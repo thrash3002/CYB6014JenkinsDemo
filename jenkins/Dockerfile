@@ -11,8 +11,9 @@ USER root
 COPY plugins.txt /usr/share/jenkins/plugins.txt
 
 # create the jenkins job directory and copy the job configuration
-RUN mkdir -p "$JENKINS_HOME"/jobs/"$NET_CORE_APP_NAME"
-COPY "$NET_CORE_APP_NAME".xml "$JENKINS_HOME"/jobs/"$NET_CORE_APP_NAME"/config.xml
+RUN mkdir -p "$JENKINS_HOME/jobs/${NET_CORE_APP_NAME}"
+COPY "$NET_CORE_APP_NAME".xml "$JENKINS_HOME/jobs/$NET_CORE_APP_NAME/config.xml"
+RUN chown -R jenkins "$JENKINS_HOME/jobs"
 
 # create temporary scripts folder
 RUN mkdir -p /var/dockerscripts
@@ -56,27 +57,3 @@ RUN \
 	
 # Install Archery CLI into container
 RUN pip install archerysec-cli
-RUN apt-get install jq
-
-
-
-
-# create new archery project
-#RUN archerysec-cli \
-#    -s http://127.0.0.1:8000 \
-#    -u admin \
-#    -p password \
-#    --createproject \
-#    --project_name=test_project \
-#    --project_disc="test project"
-	
-# run archery scan
-#RUN archerysec-cli \ 
-#    -s http://127.0.0.1:8000 \
-#    -u admin \
-#    -p password \
-#    --zapscan \
-#    --target_url=http://demo.testfire.net \
-#    --project_id=8b4303bc-2cd6-4212-8801-231e8b10be4d
-
-#archerysec-cli -h http://127.0.0.1:8000 --zap-full-scan --target http://demo.testfire.net --cicd_id 1234

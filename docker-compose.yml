@@ -53,8 +53,7 @@ services:
     container_name: archery
    
   zap:
-    image: owasp/zap2docker-stable
-    command: zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.disablekey=true -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true
+    build: ./zap
     ports:
       - "8090:8090"
     expose:
@@ -62,6 +61,16 @@ services:
     links:
       - archery
     container_name: zap
+    
+  project:
+    build: ./project
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    expose:
+      - "5000" #http
+      - "5001" #https
+    container_name: project
     
 networks:
     default:
